@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "538028051802",
+    "firebase_url": "https://wacfbproject.firebaseio.com",
+    "project_id": "wacfbproject",
+    "storage_bucket": "wacfbproject.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:538028051802:android:70ec1bb726b0dbfce7f763",
+        "android_client_info": {
+          "package_name": "com.example.firebase_project"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "538028051802-1m4tsr5a8ek60cru9nr1h2406sgiqpmk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAeEV_laNDh3TPUKNUC0YzewpiRban9dM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "538028051802-1m4tsr5a8ek60cru9nr1h2406sgiqpmk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
