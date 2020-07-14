@@ -56,10 +56,10 @@ class _FirestoreTestState extends State<FirestoreTest> {
           checkConnection().then((value) {
             if (value) {
               FireStoreClient.fireStoreClient.insertNewTask(FirestoreTask(
-                  date: '25-5-2020',
-                  description: 'dummy task',
+                  date: '29-5-2020',
+                  description: 'task5',
                   isComplete: true,
-                  title: 'this is just for testing'));
+                  title: 'this is not complete task5'));
             } else {
               print('no network found');
             }
@@ -68,7 +68,7 @@ class _FirestoreTestState extends State<FirestoreTest> {
         RaisedButton(onPressed: () {
           checkConnection().then((value) {
             if (value) {
-              FireStoreClient.fireStoreClient.getAllTasks();
+              FireStoreClient.fireStoreClient.complextQuery();
             } else {
               print('no network found');
             }
