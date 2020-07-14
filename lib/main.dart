@@ -1,11 +1,11 @@
-import 'package:firebase_database/firebase_database.dart';
-import 'package:firebase_project/Home_Page.dart';
-import 'package:firebase_project/firebase_database/firebaseDBHelper.dart';
-import 'package:firebase_project/firebase_database/firebase_task.dart';
-import 'package:firebase_project/testFirebaseRealtime.dart';
+import 'dart:convert';
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_project/firebase_firestore/ui/firestore_testing.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_project/fireAuth_helper.dart';
-import 'package:firebase_project/my_app_page.dart';
+import 'package:image_picker/image_picker.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,115 +17,66 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
-      theme: ThemeData.dark(),
-      home: FirebaseRealtimeDBTest(),
+      home: FirestoreTest(),
     );
   }
 }
 
-class FirebaseRealtimeDBTest extends StatelessWidget {
+class MainPAGE extends StatefulWidget {
+  @override
+  _MainPAGEState createState() => _MainPAGEState();
+}
+
+class _MainPAGEState extends State<MainPAGE> {
+  File _image;
+  final picker = ImagePicker();
+  Future getImage() async {
+    final pickedFile = await picker.getImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = File(pickedFile.path);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return Scaffold(
       appBar: AppBar(
-        title: Text('test real time'),
+        title: Text('PICK IMAGE'),
       ),
       body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          RaisedButton(onPressed: () {
-            FBDbHelper.fbDbHelper.insertNewFirebaseTask(FirebaseTask(
-                title: 'new task to test the stream',
-                description: 'my task description'));
-          }),
-          RaisedButton(onPressed: () {
-            FBDbHelper.fbDbHelper.insertNewFirebaseNamedTask(
-                FirebaseTask(title: 'task', description: 'desc'));
-          }),
-          RaisedButton(onPressed: () {
-            FBDbHelper.fbDbHelper.childIsChanged();
-          }),
-          StreamBuilder<Event>(
-            stream: FBDbHelper.fbDbHelper.initFBDB().onValue,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                var x = snapshot.data.snapshot.value;
-                print(x);
-                return Text('New data');
-              } else {
-                return Text('No data');
-              }
-            },
-          )
-
-          // StreamBuilder<Event>(
-          //     stream: FBDbHelper.fbDbHelper.initFBDB().onChildAdded,
-          //     builder: (BuildContext context, snapshot) {
-          //       if (snapshot.hasData) {
-          //         print('new order added');
-          //         // Map<String, dynamic> map =
-          //         //     Map<String, dynamic>.from(snapshot.data.snapshot.value);
-          //         print(snapshot.data.snapshot.value);
-          //         return Text('hello');
-          //       } else if (snapshot.hasError) {
-          //         return Text('no data');
-          //       }
-          //     })
+          Expanded(
+            child: _image == null
+                ? Text('please select the image')
+                : Image.file(_image),
+          ),
+          RaisedButton(onPressed: () async {
+            // String imagePath = _image.path.split('/').last;
+            // print(imagePath);
+            // StorageTaskSnapshot snapshot = await FirebaseStorage.instance
+            //     .ref()
+            //     .child(imagePath)
+            //     .putFile(_image)
+            //     .onComplete;
+            // if (snapshot.error == null) {
+            //   snapshot.ref.getDownloadURL().then((value) => print(value));
+            // }
+            QuerySnapshot query = await Firestore.instance
+                .collection('users')
+                .where('age', isGreaterThan: 10)
+                .where('gender', isEqualTo: 'male')
+                .orderBy('age')
+                .limit(3)
+                .getDocuments();
+          })
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: getImage,
+        tooltip: 'Pick Image',
       ),
     );
   }
 }
-
-/// check if the user logged in or not
-class SplachScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return FutureBuilder<bool>(
-      future: FireAuthHelper.fireAuthHelper.checkUserLogin(),
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          bool isLogged = snapshot.data;
-          if (isLogged) {
-            return MyFirstPage();
-          } else {
-            return HomePage();
-          }
-        } else {
-          return Center(child: CircularProgressIndicator());
-        }
-      },
-    );
-  }
-}
-
-// class BrokerPage extends StatefulWidget {
-//   @override
-//   _BrokerPageState createState() => _BrokerPageState();
-// }
-
-// class _BrokerPageState extends State<BrokerPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     // TODO: implement build
-//     return FutureBuilder<bool>(
-//       future: FireAuthHelper.fireAuthHelper.getloginUser(),
-//       builder: (context, snapshot) {
-//         if (snapshot.hasData) {
-//           bool results = snapshot.data;
-//           print(results);
-//           if (results) {
-//             return MyFirstPage();
-//           } else {
-//             return HomePage();
-//           }
-//         } else {
-//           return CircularProgressIndicator();
-//         }
-//       },
-//     );
-//   }
-// }
